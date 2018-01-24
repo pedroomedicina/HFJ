@@ -50,6 +50,14 @@ public class BeatBox {
         JButton downTempo = new JButton("Tempo Down");
         downTempo.addActionListener(new MyDownTempoListener());
         buttonBox.add(downTempo);
+        
+        JButton serializeIt = new JButton("serializeIt");
+        serializeIt.addActionListener(new MySendListener());
+        buttonBox.add(serializeIt);
+
+        JButton readIn = new JButton("restore");
+        readIn.addActionListener(new MyReadInListener());
+        buttonBox.add(readIn);
 
         Box nameBox = new Box(BoxLayout.Y_AXIS);
 
@@ -174,6 +182,77 @@ public class BeatBox {
             event = new MidiEvent(a, tick);
         } catch (Exception e){e.printStackTrace();}
         return event;
+    }
+    
+    public class MySendListener implements ActionListener {
+
+        public void actionPerformed (ActionEvent a) {
+
+            JFileChooser fileSave = new JFileChooser();
+            fileSave.showSaveDialog(theFrame);
+            saveFile(fileSave.getSelectedFile());
+
+
+        }
+
+        private void saveFile (File file) {
+            try {
+
+                boolean[] checkboxState = new boolean[256];
+
+                for (int i = 0; i < 256; i++) {
+
+                    JCheckBox check = (JCheckBox) checkboxList.get(i);
+                    if (check.isSelected()) {
+                        checkboxState[i] = true;
+                    }
+                }
+
+               FileOutputStream fileStream = new FileOutputStream(file.getPath());
+                //A Pesar de que FileOutput Stream recibe un objeto "name" es mejor (y necesario) pasarle el path completo,
+                // de esa manera el usuario puede guardar el archivo en el directorio deseado.
+                ObjectOutputStream os = new ObjectOutputStream(fileStream);
+                os.writeObject(checkboxState);
+                os.close();
+
+            } catch (Exception ex) {
+                System.out.println("Could not write the song out");
+                ex.printStackTrace();}
+        }
+    }
+
+    public class MyReadInListener implements ActionListener {
+
+        public void actionPerformed (ActionEvent a) {
+            JFileChooser fileOpen = new JFileChooser();
+            fileOpen.showOpenDialog(theFrame);
+            restoreFile(fileOpen.getSelectedFile());
+
+            sequencer.stop();
+            buildTrackAndStart();
+        }
+
+        private void restoreFile (File file) {
+
+            boolean[] checkboxState = null;
+
+            try {
+                FileInputStream fileIn = new FileInputStream(new File(file.getPath()));
+                ObjectInputStream is = new ObjectInputStream(fileIn);
+                checkboxState = (boolean[]) is.readObject();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            for (int i = 0; i < 256; i++) {
+                JCheckBox check = (JCheckBox) checkboxList.get(i);
+                if (checkboxState[i]) {
+                    check.setSelected(true);
+                } else {
+                    check.setSelected(false);
+                }
+            }
+        }
     }
 
 }
