@@ -22,7 +22,7 @@ public class SimpleChatClient {
 
         JFrame ventana = new JFrame("Chat simple");
         JPanel panelPrincipal= new JPanel();
-        entrantes = new JTextArea(15,50);
+        entrantes = new JTextArea(15,30); //reduce it to 30 columns, and it will fit in a 400 x 500 frame.
         entrantes.setLineWrap(true);
         entrantes.setWrapStyleWord(true);
         entrantes.setEditable(false);
@@ -42,7 +42,7 @@ public class SimpleChatClient {
         hiloLector.start();
 
         ventana.getContentPane().add(BorderLayout.CENTER, panelPrincipal);
-        ventana.setSize (400, 500);
+        ventana.setSize (400, 500); //or increase this ratio, but it'll look pathetic.
         ventana.setVisible(true);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -81,7 +81,7 @@ public class SimpleChatClient {
             try {
                 while ((mensaje = lector.readLine()) != null) {
                     System.out.println("leído " + mensaje);
-                    entrantes.append(mensaje + "/n");
+                    entrantes.append(mensaje + "\n"); //now it does add a new line
                 }
             } catch (IOException e) {e.printStackTrace();}
         }
