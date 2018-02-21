@@ -1,3 +1,7 @@
+// if you want to chat, you must compile and run MusicServer.java
+// To compile properly use a cmd terminal -> type cd + file path to navigate to the folder -> type javac BeatBox.java -> type java BeatBox "username" (without quotation marks)
+// you can have more than one BeatBox running. One per cmd terminal.
+
 import java.awt.*;
 import javax.swing.*;
 import javax.sound.midi.*;
